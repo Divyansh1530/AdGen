@@ -1,13 +1,182 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+// AUTH
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+
+  credits      Int      @default(20)
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  projects     Project[]
+  refreshTokens RefreshToken[]
+
+  creditTransactions CreditTransaction[]
+
+  @@index([email])
+}
+
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  userId    String
+
+  tokenHash String   @unique
+  expiresAt DateTime
+  revoked   Boolean  @default(false)
+
+  userAgent String?
+  ipAddress String?
+
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId],references: [id],onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// PROJECT
+
+model Project {
+  id                 String   @id @default(uuid())
+  userId             String
+
+  name               String
+  productName        String
+  productDescription String?
+  userPrompt         String?
+
+  aspectRatio        AspectRatio @default(PORTRAIT_9_16)
+
+  productImageUrl    String?
+  modelImageUrl      String?
+
+  status             ProjectStatus @default(DRAFT)
+  errorMessage       String?
+
+  user               User @relation(fields: [userId],references: [id],onDelete: Cascade)
+
+  generatedAssets    GeneratedAsset[]
+
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@index([userId])
+}
+
+
+// GENERATED OUTPUTS
+
+
+// One project can have:
+//   Image 1
+//   Image 2
+//   Image 3
+//
+// And each image can have one or more videos generated from it.
+//
+// Example:
+//
+// Project
+//   ├── Image 1
+//   │     └── Video 1
+//   │
+//   ├── Image 2
+//   │     ├── Video 2
+//   │     └── Video 3
+//   │
+//   └── Image 3
+//
+// sourceAssetId tells us which image a video came from.
+
+model GeneratedAsset {
+  id            String   @id @default(uuid())
+  projectId     String
+
+  type          AssetType
+  url           String
+
+  sourceAssetId String?
+
+  status        AssetStatus @default(READY)
+
+  isSelected    Boolean @default(false)
+
+  project Project @relation(fields: [projectId],references: [id],onDelete: Cascade)
+
+  sourceAsset GeneratedAsset? @relation("ImageToVideo",fields: [sourceAssetId],references: [id])
+
+  derivedVideos GeneratedAsset[] @relation("ImageToVideo")
+
+  createdAt DateTime @default(now())
+
+  @@index([projectId])
+  @@index([sourceAssetId])
+}
+
+model CreditTransaction {
+  id            String   @id @default(uuid())
+
+  userId        String
+  user          User     @relation(fields: [userId],references: [id],onDelete: Cascade)
+
+  amount        Int
+  type          CreditTransactionType
+  balanceAfter  Int
+
+  description   String?
+
+  createdAt     DateTime @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+// ENUMS
+
+enum CreditTransactionType {
+  SIGNUP_BONUS
+  IMAGE_GENERATION
+  VIDEO_GENERATION
+  REFUND
+  PURCHASE
+  ADMIN_ADJUSTMENT
+}
+
+enum AspectRatio {
+  SQUARE_1_1
+  PORTRAIT_9_16
+  LANDSCAPE_16_9
+  PORTRAIT_4_5
+}
+
+enum ProjectStatus {
+  DRAFT
+  GENERATING_IMAGE
+  IMAGE_GENERATED
+  GENERATING_VIDEO
+  COMPLETED
+  FAILED
+}
+
+enum AssetType {
+  IMAGE
+  VIDEO
+}
+
+enum AssetStatus {
+  PROCESSING
+  READY
+  FAILED
 }
