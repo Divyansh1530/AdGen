@@ -1,5 +1,6 @@
 import type{ Request,Response } from "express"
 import {prisma} from '../lib/prisma.js'
+import { uploadOnCloudinary } from "../utils/uploadOnCloudinary.js"
 
 export const createProject = async(req:Request,res:Response):Promise<void> => {
     try {
@@ -252,4 +253,84 @@ export const deleteProject = async (req:Request,res:Response):Promise<void> => {
       message: "Internal server error",
     });
   }
+}
+
+export const uploadProjectImages = async (req:Request,res:Response):Promise<void> => {
+    try {
+        const projectId = req.params.projectId as string
+
+        if (!projectId) {
+            res.status(400).json({
+                success:false,
+                message:"Project Id is required"
+            })
+            return
+        }
+
+        const project = await prisma.project.findFirst({
+            where:{
+                id:projectId,
+                userId:req.userId
+            }
+        })
+
+        if (!project) {
+            res.status(404).json({
+                success:false,
+                message:"Project not found"
+            })
+            return
+        }
+
+        const files = req.files as {
+            [fieldname:string]: Express.Multer.File[]
+        }
+        
+        const productImage = files?.productImage?.[0]
+        const modelImage = files?.modelImage?.[0]
+
+        if (!productImage || !modelImage) {
+            res.status(400).json({
+                success:false,
+                message:"Both Product and Model image are required"
+            })
+            return
+        }
+
+        const productUpload = await uploadOnCloudinary(
+            productImage.buffer,
+            "adgen/projects"
+        )
+
+        const modelUpload = await uploadOnCloudinary(
+            modelImage.buffer,
+            "adgen/projects"
+        )
+
+        const updatedProject = await prisma.project.update({
+            where:{
+                id:projectId
+            },
+            data:{
+                productImageUrl:productUpload.secure_url,
+                modelImageUrl:modelUpload.secure_url
+            }
+        })
+
+        res.status(200).json({
+            success:true,
+            message:"Project images uploaded successfully",
+            data:{
+                project:updatedProject
+            }
+        })
+
+    } catch (error) {
+        console.error("Upload Project Images Error ",error)
+
+        res.status(500).json({
+            success:false,
+            message:"Internal Server Error"
+        })
+    }
 }
