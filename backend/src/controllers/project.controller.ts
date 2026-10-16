@@ -1,6 +1,28 @@
 import type{ Request,Response } from "express"
 import {prisma} from '../lib/prisma.js'
 import { uploadOnCloudinary } from "../utils/uploadOnCloudinary.js"
+import cloudinary from "../lib/cloudinary.js"
+
+const extractCloudinaryPublicId = (imageUrl: string | null | undefined): string | null => {
+  if (!imageUrl) return null;
+  try {
+    const url = new URL(imageUrl);
+    const pathParts = url.pathname.split("/");
+    const uploadIndex = pathParts.indexOf("upload");
+    if (uploadIndex === -1) return null;
+
+    let publicId = pathParts.slice(uploadIndex + 1).join("/");
+    if (publicId.startsWith("v")) {
+      const firstSlash = publicId.indexOf("/");
+      if (firstSlash !== -1) {
+        publicId = publicId.substring(firstSlash + 1);
+      }
+    }
+    return publicId.replace(/\.[^/.]+$/, "");
+  } catch {
+    return null;
+  }
+};
 
 export const createProject = async(req:Request,res:Response):Promise<void> => {
     try {
@@ -234,6 +256,42 @@ export const deleteProject = async (req:Request,res:Response):Promise<void> => {
       });
       return;
     }
+
+     // Clean up all Cloudinary assets associated with this project
+    const deletionPromises: Promise<unknown>[] = [];
+
+    const productPublicId = extractCloudinaryPublicId(project.productImageUrl);
+    if (productPublicId) {
+      deletionPromises.push(
+        cloudinary.uploader.destroy(productPublicId, { resource_type: "image" }).catch((err) => {
+          console.warn(`Failed to delete product image ${productPublicId}:`, err);
+        })
+      );
+    }
+
+    const modelPublicId = extractCloudinaryPublicId(project.modelImageUrl);
+    if (modelPublicId) {
+      deletionPromises.push(
+        cloudinary.uploader.destroy(modelPublicId, { resource_type: "image" }).catch((err) => {
+          console.warn(`Failed to delete model image ${modelPublicId}:`, err);
+        })
+      );
+    }
+
+    for (const asset of project.generatedAssets) {
+      const assetPublicId = extractCloudinaryPublicId(asset.url);
+      if (assetPublicId) {
+        deletionPromises.push(
+          cloudinary.uploader.destroy(assetPublicId, {
+            resource_type: asset.type === "VIDEO" ? "video" : "image",
+          }).catch((err) => {
+            console.warn(`Failed to delete asset ${assetPublicId}:`, err);
+          })
+        );
+      }
+    }
+
+    await Promise.allSettled(deletionPromises);
 
     await prisma.project.delete({
       where: {
