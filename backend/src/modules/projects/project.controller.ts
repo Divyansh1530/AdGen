@@ -1,7 +1,7 @@
 import type{ Request,Response } from "express"
-import {prisma} from '../lib/prisma.js'
-import { uploadOnCloudinary } from "../utils/uploadOnCloudinary.js"
-import cloudinary from "../lib/cloudinary.js"
+import {prisma} from '../../lib/prisma.js'
+import { uploadOnCloudinary } from "../../integrations/storage/storage.service.js"
+import cloudinary from "../../integrations/storage/cloudinary.client.js"
 
 const extractCloudinaryPublicId = (imageUrl: string | null | undefined): string | null => {
   if (!imageUrl) return null;
