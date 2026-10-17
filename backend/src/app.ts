@@ -14,8 +14,8 @@ app.use(cookieParser())
 
 //routes import
 
-import authRoutes from './routes/auth.routes.ts'
-import projectRoutes from './routes/project.routes.ts'
+import authRoutes from './modules/auth/auth.routes.ts'
+import projectRoutes from './modules/projects/project.routes.ts'
 
 //routes declaration
 

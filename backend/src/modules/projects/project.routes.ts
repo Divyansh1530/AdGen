@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { authenticate } from "../../middleware/auth.middleware";
+import { authenticate } from "../../shared/middleware/auth.middleware";
 import { createProject, deleteProject, getProjectById, getProjects, updateProject, uploadProjectImages } from "./project.controller";
-import { uploadProjectImages as uploadImages }   from "../../middleware/multer.middleware";
+import { uploadProjectImages as uploadImages }   from "../../shared/middleware/multer.middleware";
 
 const router = Router()
 

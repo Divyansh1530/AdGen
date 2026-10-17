@@ -1,8 +1,8 @@
-import {prisma} from '../../lib/prisma.ts'
+import {prisma} from '../../shared/lib/prisma.ts'
 import type{ Request,Response } from 'express';
-import { comparePassword,hashPassword } from '../../utils/password.ts';
-import { generateAccessToken,generateRefreshToken,verifyRefreshToken} from '../../utils/jwt.ts';
-import { hashToken } from '../../utils/token.ts';
+import { comparePassword,hashPassword } from '../../shared/utils/password.ts';
+import { generateAccessToken,generateRefreshToken,verifyRefreshToken} from '../../shared/utils/jwt.ts';
+import { hashToken } from '../../shared/utils/token.ts';
 import type{ CookieOptions } from 'express';
 
 const isProduction = process.env.NODE_ENV === "production";

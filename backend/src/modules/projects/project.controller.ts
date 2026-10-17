@@ -1,5 +1,5 @@
 import type{ Request,Response } from "express"
-import {prisma} from '../../lib/prisma.js'
+import {prisma} from '../../shared/lib/prisma.js'
 import { uploadOnCloudinary } from "../../integrations/storage/storage.service.js"
 import cloudinary from "../../integrations/storage/cloudinary.client.js"
 
