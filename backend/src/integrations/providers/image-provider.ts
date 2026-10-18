@@ -1,5 +1,5 @@
 import type { ImageGenerationProvider } from "./ai.interface.js";
-import { MockImageProvider } from "./mock-image.provider.js";
+import { MockImageProvider } from "./mock providers/mock-image.provider.js";
 
 const providerName = process.env.IMAGE_GENERATION_PROVIDER || "mock";
 

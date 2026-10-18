@@ -4,7 +4,7 @@ import fs from "fs/promises";
 import type {
   GeneratedImage,
   ImageGenerationProvider,
-} from "./ai.interface.ts";
+} from "../ai.interface.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

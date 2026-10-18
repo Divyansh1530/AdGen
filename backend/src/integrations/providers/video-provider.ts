@@ -1,5 +1,5 @@
 import type { VideoGenerationProvider } from "./ai.interface.js";
-import { MockVideoProvider } from "./mock-video.provider.js";
+import { MockVideoProvider } from "./mock providers/mock-video.provider.js";
 
 const providerName = process.env.VIDEO_GENERATION_PROVIDER || "mock";
 

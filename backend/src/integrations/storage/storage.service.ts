@@ -1,4 +1,4 @@
-import cloudinary from "./cloudinary.client.ts";
+import cloudinary from "./cloudinary.client.js";
 import type{ UploadApiResponse } from "cloudinary";
 
 export const uploadOnCloudinary = (

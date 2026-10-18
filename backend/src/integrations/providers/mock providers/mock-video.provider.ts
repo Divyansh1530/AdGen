@@ -5,7 +5,7 @@ import type {
   GeneratedVideo,
   GenerateVideoParams,
   VideoGenerationProvider,
-} from "./ai.interface.js";
+} from "../ai.interface.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
