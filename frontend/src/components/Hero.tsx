@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
-import rawProduct from "../../assets/images/raw-product.jpg";
-import rawModel from "../../assets/images/raw-model.jpg";
-import generatedAd from "../../assets/images/generated-ad.jpg";
+import rawProduct from "../assets/images/raw-product.jpg";
+import rawModel from "../assets/images/raw-model.jpg";
+import generatedAd from "../assets/images/generated-ad.jpg";
 
 export function Hero() {
   return (

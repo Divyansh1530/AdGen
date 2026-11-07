@@ -5,6 +5,7 @@ import { AuthProvider } from "../src/hooks/useAuth";
 import Home from "../src/pages/Home";
 import Login from "../src/pages/Login";
 import Signup from "../src/pages/Signup";
+import CreateAd from "./pages/CreateAd";
 
 export function App() {
   return (
@@ -14,6 +15,7 @@ export function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/create" element={<CreateAd />} />
         </Routes>
 
         <Toaster position="bottom-right" theme="dark" richColors />
