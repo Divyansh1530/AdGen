@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Sparkles } from "lucide-react";
-import rawProduct from "../assets/images/raw-product.jpg";
-import generatedAd from "../assets/images/generated-ad.jpg";
+import rawProduct from "../../assets/images/raw-product.jpg";
+import generatedAd from "../../assets/images/generated-ad.jpg";
 
 export function FlowSection() {
   const ref = useRef<HTMLDivElement>(null);

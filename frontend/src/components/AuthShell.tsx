@@ -3,7 +3,7 @@ import { useState, type FormEvent, type ReactNode } from "react";
 import { Loader2, Eye, EyeOff, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { Navbar } from "./Navbar";
-import generatedAd from "@/assets/images/generated-ad.jpg";
+import generatedAd from "../../assets/images/generated-ad.jpg";
 
 export interface AuthFormValues {
   name: string;
