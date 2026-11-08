@@ -6,6 +6,8 @@ import Home from "../src/pages/Home";
 import Login from "../src/pages/Login";
 import Signup from "../src/pages/Signup";
 import CreateAd from "./pages/CreateAd";
+import Dashboard from "./pages/Dashboard";
+import NotFound from "./pages/NotFound";
 
 export function App() {
   return (
@@ -16,6 +18,8 @@ export function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/create" element={<CreateAd />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
 
         <Toaster position="bottom-right" theme="dark" richColors />

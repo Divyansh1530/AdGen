@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState, type FormEvent, type ReactNode } from "react";
 import { Loader2, Eye, EyeOff, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
-import { Navbar } from "./Navbar";
+import { Navbar } from "./NavBar";
 import generatedAd from "../assets/images/generated-ad.jpg";
 
 export interface AuthFormValues {
